@@ -59,7 +59,7 @@ const returnOrder = async (req, res) => {
 };
 
 const generateWhatsAppLink = (message) => {
-  const phoneNumber = "917025200580";
+  const phoneNumber = "916238933760";
   const encodedMessage = encodeURIComponent(message);
   return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 };

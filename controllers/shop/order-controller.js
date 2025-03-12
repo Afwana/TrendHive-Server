@@ -104,7 +104,7 @@ Thank you for your order! We'll contact you shortly to confirm.
 };
 
 const generateWhatsAppLink = (message) => {
-  const phoneNumber = "917025200580";
+  const phoneNumber = "916238933760";
 
   const encodedMessage = encodeURIComponent(message);
 
