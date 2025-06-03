@@ -38,8 +38,11 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    // origin: ["http://localhost:5173", "https://trend-hive-web.vercel.app"],
-    origin: "*",
+    origin: [
+      "http://localhost:5174",
+      "http://localhost:5173",
+      "https://trend-hive-web.vercel.app",
+    ],
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
       "Content-Type",
