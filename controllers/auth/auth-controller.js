@@ -66,16 +66,24 @@ const loginUser = async (req, res) => {
         userName: checkUser.userName,
       },
       "CLIENT_SECRET_KEY",
-      { expiresIn: "60m" }
+      { expiresIn: "7d" }
     );
 
-    res.cookie("token", token, { httpOnly: true, secure: false }).json({
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: production,
+      sameSite: "none",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.json({
       success: true,
       message: "Logged in successfully",
+      token,
       user: {
+        id: checkUser._id,
         phoneNumber: checkUser.phoneNumber,
         role: checkUser.role,
-        id: checkUser._id,
         userName: checkUser.userName,
       },
     });
@@ -91,19 +99,30 @@ const loginUser = async (req, res) => {
 //logout
 
 const logoutUser = (req, res) => {
-  res.clearCookie("token").json({
-    success: true,
-    message: "Logged out successfully!",
-  });
+  res
+    .clearCookie("token", {
+      httpOnly: true,
+      secure: production,
+      sameSite: "none",
+    })
+    .json({
+      success: true,
+      message: "Logged out successfully!",
+    });
 };
 
 //auth middleware
 const authMiddleware = async (req, res, next) => {
-  const token = req.cookies.token;
+  const cookieToken = req.cookies.token;
+
+  const headerToken = req.headers.authorization?.split(" ")[1];
+
+  const token = cookieToken || headerToken;
+
   if (!token)
     return res.status(401).json({
       success: false,
-      message: "Unauthorised user!",
+      message: "Unauthorised user! No token provided",
     });
 
   try {

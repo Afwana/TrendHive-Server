@@ -36,8 +36,6 @@ mongoose
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.set("trust proxy", 1);
-
 app.use(
   cors({
     origin: ["http://localhost:5173", "https://trend-hive-web.vercel.app"],
@@ -45,12 +43,11 @@ app.use(
     allowedHeaders: [
       "Content-Type",
       "Authorization",
-      // "Cache-Control",
-      // "Expires",
-      // "Pragma",
+      "Cache-Control",
+      "Expires",
+      "Pragma",
     ],
     credentials: true,
-    exposedHeaders: ["set-cookie"],
   })
 );
 
