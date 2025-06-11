@@ -5,7 +5,6 @@ const Product = require("../../models/Product");
 const createOrder = async (req, res) => {
   try {
     const { userId, cartItems, addressInfo, totalAmount, cartId } = req.body;
-    console.log(req.body);
 
     for (let item of cartItems) {
       const product = await Product.findById(item.productId);
