@@ -93,6 +93,7 @@ const fetchCartItems = async (req, res) => {
       price: item.productId.price,
       salePrice: item.productId.salePrice,
       quantity: item.quantity,
+      size: item.size,
     }));
 
     res.status(200).json({
