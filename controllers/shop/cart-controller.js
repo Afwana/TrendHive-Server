@@ -3,9 +3,9 @@ const Product = require("../../models/Product");
 
 const addToCart = async (req, res) => {
   try {
-    const { userId, productId, quantity } = req.body;
+    const { userId, productId, quantity, size } = req.body;
 
-    if (!userId || !productId || quantity <= 0) {
+    if (!userId || !productId || quantity <= 0 || !size) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
