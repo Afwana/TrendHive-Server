@@ -71,6 +71,7 @@ const formatOrderForWhatsApp = (order, addressInfo) => {
       (item) =>
         `• ${item.title} 
 Quantity : ${item.quantity} 
+Size: ${item.size}
 Price : INR ${item.price}
 Total : INR ${(item.price * item.quantity).toFixed(2)}
 ${item.thumbnail}`
