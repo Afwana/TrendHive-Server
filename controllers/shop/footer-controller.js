@@ -59,7 +59,7 @@ const getUserMessage = async (req, res) => {
 
 const getSocialMediaLinks = async (req, res) => {
   try {
-    const links = await SocialLink.find();
+    const links = await SocialLink.findOne();
     res.status(200).json({
       success: true,
       data: links,
