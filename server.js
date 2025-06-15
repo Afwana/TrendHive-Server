@@ -41,8 +41,8 @@ app.use(
     origin: [
       "http://localhost:5174",
       "http://localhost:5173",
-      "https://trendhive-ten.vercel.app",
-      "https://trendhive-admin-gilt.vercel.app",
+      "https://trendhive-resell.vercel.app",
+      "https://trendhive-resell-admin.vercel.app",
     ],
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
