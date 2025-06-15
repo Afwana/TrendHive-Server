@@ -42,6 +42,28 @@ const addAddress = async (req, res) => {
   }
 };
 
+const getAdminInfo = async (req, res) => {
+  try {
+    const adminInfo = await AdminInfo.findOne();
+    if (!adminInfo) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin info not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: adminInfo,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      success: false,
+      message: "Error occured",
+    });
+  }
+};
+
 const addSocialMediaLinks = async (req, res) => {
   try {
     const { whatsapp, instagram, facebook, xtwitter } = req.body;
@@ -78,18 +100,18 @@ const addSocialMediaLinks = async (req, res) => {
   }
 };
 
-const getAdminInfo = async (req, res) => {
+const getMediaLinks = async (req, res) => {
   try {
-    const adminInfo = await AdminInfo.findOne();
-    if (!adminInfo) {
+    const mediaLinks = await SocialLink.findOne();
+    if (!mediaLinks) {
       return res.status(404).json({
         success: false,
-        message: "Admin info not found",
+        message: "Social media links not found",
       });
     }
     res.status(200).json({
       success: true,
-      data: adminInfo,
+      data: mediaLinks,
     });
   } catch (e) {
     console.log(e);
@@ -142,8 +164,9 @@ const deleteMessage = async (req, res) => {
 
 module.exports = {
   addAddress,
-  addSocialMediaLinks,
   getAdminInfo,
+  addSocialMediaLinks,
+  getMediaLinks,
   fetchAllMessages,
   deleteMessage,
 };
