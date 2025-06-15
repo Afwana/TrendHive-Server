@@ -46,14 +46,24 @@ const addSocialMediaLinks = async (req, res) => {
   try {
     const { whatsapp, instagram, facebook, xtwitter } = req.body;
 
-    const newLinks = new SocialLink({
-      whatsapp,
-      instagram,
-      facebook,
-      xtwitter,
-    });
+    let mediaLinks = await SocialLink.findOne();
 
-    await newLinks.save();
+    if (mediaLinks) {
+      mediaLinks.whatsapp = whatsapp || mediaLinks.whatsapp;
+      mediaLinks.instagram = instagram || mediaLinks.instagram;
+      mediaLinks.facebook = facebook || mediaLinks.facebook;
+      mediaLinks.xtwitter = xtwitter || mediaLinks.xtwitter;
+
+      await mediaLinks.save();
+    } else {
+      mediaLinks = await SocialLink.create({
+        whatsapp,
+        instagram,
+        facebook,
+        xtwitter,
+      });
+    }
+
     res.status(201).json({
       success: true,
       message: "Social media links updated!!",
