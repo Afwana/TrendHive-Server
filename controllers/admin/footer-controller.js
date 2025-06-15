@@ -89,7 +89,7 @@ const addSocialMediaLinks = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Social media links updated!!",
-      data: newLinks,
+      data: mediaLinks,
     });
   } catch (e) {
     console.log(e);
