@@ -137,4 +137,48 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser, logoutUser, authMiddleware };
+// reset password
+const resetPassword = async (req, res) => {
+  const { phoneNumber, newPassword } = req.body;
+
+  try {
+    if (!phoneNumber || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone number and new password are required",
+      });
+    }
+
+    // Find user by phone number
+    const clientUser = await User.findOne({ phoneNumber });
+    if (!clientUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User with this phone number not found",
+      });
+    }
+
+    // Update the password
+    clientUser.password = await bcrypt.hash(newPassword, 12);
+    await clientUser.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Some error occurred during password reset",
+    });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  logoutUser,
+  authMiddleware,
+  resetPassword,
+};
