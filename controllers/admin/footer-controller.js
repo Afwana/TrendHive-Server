@@ -86,7 +86,7 @@ const addSocialMediaLinks = async (req, res) => {
       });
     }
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "Social media links updated!!",
       data: mediaLinks,
