@@ -1,5 +1,6 @@
 const AdminInfo = require("../../models/AdminInfo");
 const Message = require("../../models/Message");
+const SocialLink = require("../../models/SocialLink");
 
 const addAddress = async (req, res) => {
   try {
@@ -31,6 +32,32 @@ const addAddress = async (req, res) => {
       success: true,
       message: "Footer info updated successfully",
       data: adminInfo,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      success: false,
+      message: "Error occured",
+    });
+  }
+};
+
+const addSocialMediaLinks = async (req, res) => {
+  try {
+    const { whatsapp, instagram, facebook, xtwitter } = req.body;
+
+    const newLinks = new SocialLink({
+      whatsapp,
+      instagram,
+      facebook,
+      xtwitter,
+    });
+
+    await newLinks.save();
+    res.status(201).json({
+      success: true,
+      message: "Social media links updated!!",
+      data: newLinks,
     });
   } catch (e) {
     console.log(e);
@@ -105,6 +132,7 @@ const deleteMessage = async (req, res) => {
 
 module.exports = {
   addAddress,
+  addSocialMediaLinks,
   getAdminInfo,
   fetchAllMessages,
   deleteMessage,

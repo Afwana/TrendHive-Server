@@ -1,5 +1,6 @@
 const AdminInfo = require("../../models/AdminInfo");
 const Message = require("../../models/Message");
+const SocialLink = require("../../models/SocialLink");
 
 const addMessages = async (req, res) => {
   try {
@@ -56,8 +57,25 @@ const getUserMessage = async (req, res) => {
   }
 };
 
+const getSocialMediaLinks = async (req, res) => {
+  try {
+    const links = await SocialLink.find();
+    res.status(200).json({
+      success: true,
+      data: links,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error occured",
+    });
+  }
+};
+
 module.exports = {
   addMessages,
   getAdminInfo,
   getUserMessage,
+  getSocialMediaLinks,
 };
