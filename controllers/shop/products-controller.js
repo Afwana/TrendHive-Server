@@ -12,22 +12,28 @@ const getFilteredProducts = async (req, res) => {
 
     let filters = {};
 
-    if (category.length) {
-      filters.category = { $in: category.split(",") };
+    if (category && category.length) {
+      const categoryArray = Array.isArray(category)
+        ? category
+        : category.split(",");
+      filters.category = { $in: categoryArray };
     }
 
     if (brand.length) {
-      filters.brand = { $in: brand.split(",") };
+      const brandArray = Array.isArray(brand) ? brand : brand.split(",");
+      filters.brand = { $in: brandArray };
     }
 
     if (size.length) {
-      const sizeArray = size.split(",");
-      filters.size = { $regex: new RegExp(sizeArray.join("|"), "i") };
+      const sizeArray = Array.isArray(size) ? size : size.split(",");
+      filters.size = { $in: sizeArray.map((s) => new RegExp(s, "i")) };
     }
 
     if (colours.length) {
-      const coloursArray = colours.split(",");
-      filters.colours = { $regex: new RegExp(coloursArray.join("|"), "i") };
+      const coloursArray = Array.isArray(colours)
+        ? colours
+        : colours.split(",");
+      filters.colours = { $in: coloursArray.map((c) => new RegExp(c, "i")) };
     }
 
     let sort = {};
