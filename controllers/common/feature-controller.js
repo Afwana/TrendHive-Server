@@ -5,12 +5,12 @@ const addFeatureImage = async (req, res) => {
     const { image } = req.body;
 
     const imageCount = await Feature.countDocuments();
-    if (imageCount >= 3) {
-      return res.status(400).json({
-        success: false,
-        message: "Limit reached!! you can only add up to 3 banners.",
-      });
-    }
+    // if (imageCount >= 3) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Limit reached!! you can only add up to 3 banners.",
+    //   });
+    // }
 
     const featureImages = new Feature({
       image,
