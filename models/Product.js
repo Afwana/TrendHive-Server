@@ -6,7 +6,8 @@ const ProductSchema = new mongoose.Schema(
     thumbnail: String,
     title: String,
     description: String,
-    category: [String],
+    category: String,
+    subCategory: [String],
     size: String,
     colours: String,
     quality: String,
@@ -15,6 +16,7 @@ const ProductSchema = new mongoose.Schema(
     salePrice: Number,
     totalStock: Number,
     averageReview: Number,
+    relativeProducts: [String],
   },
   { timestamps: true }
 );
