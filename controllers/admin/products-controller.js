@@ -29,6 +29,7 @@ const addProduct = async (req, res) => {
       title,
       description,
       category,
+      subCategories,
       brand,
       size,
       colours,
@@ -37,29 +38,43 @@ const addProduct = async (req, res) => {
       salePrice,
       totalStock,
       averageReview,
+      relativeProducts = [],
     } = req.body;
 
-    const categories =
-      typeof category === "string"
-        ? category.split(",").map((c) => c.trim())
-        : Array.isArray(category)
-        ? category
+    const subCategoriesArray =
+      typeof subCategories === "string"
+        ? subCategories.split(",").map((cat) => cat.trim())
+        : Array.isArray(subCategories)
+        ? subCategories
         : [];
+
+    let relativeProductsArray = [];
+    if (typeof relativeProducts === "string") {
+      try {
+        relativeProductsArray = JSON.parse(relativeProducts);
+      } catch (error) {
+        relativeProductsArray = [];
+      }
+    } else if (Array.isArray(relativeProducts)) {
+      relativeProductsArray = relativeProducts;
+    }
 
     const newlyCreatedProduct = new Product({
       thumbnail,
       images,
       title,
       description,
-      category: categories,
+      category,
+      sucCategories: subCategoriesArray,
       brand,
       size,
       quality,
       colours,
       price,
-      salePrice,
-      totalStock,
-      averageReview,
+      salePrice: salePrice || price,
+      totalStock: totalStock || 0,
+      averageReview: averageReview || 0,
+      relativeProducts: relativeProducts,
     });
 
     await newlyCreatedProduct.save();
@@ -71,13 +86,12 @@ const addProduct = async (req, res) => {
     console.log(e);
     res.status(500).json({
       success: false,
-      message: "Error occured",
+      message: "Error occured while adding product",
     });
   }
 };
 
 //fetch all products
-
 const fetchAllProducts = async (req, res) => {
   try {
     const listOfProducts = await Product.find({});
@@ -104,6 +118,7 @@ const editProduct = async (req, res) => {
       title,
       description,
       category,
+      subCategories,
       brand,
       price,
       size,
@@ -112,6 +127,7 @@ const editProduct = async (req, res) => {
       salePrice,
       totalStock,
       averageReview,
+      relativeProducts,
     } = req.body;
 
     let findProduct = await Product.findById(id);
@@ -135,6 +151,31 @@ const editProduct = async (req, res) => {
     findProduct.thumbnail = thumbnail || findProduct.thumbnail;
     findProduct.images = images || findProduct.images;
     findProduct.averageReview = averageReview || findProduct.averageReview;
+
+    // Update subCategories
+    if (subCategories !== undefined) {
+      findProduct.subCategories =
+        typeof subCategories === "string"
+          ? subCategories.split(",").map((sub) => sub.trim())
+          : Array.isArray(subCategories)
+          ? subCategories
+          : [];
+    }
+
+    // Update relativeProducts
+    if (relativeProducts !== undefined) {
+      let relativeProductsArray = [];
+      if (typeof relativeProducts === "string") {
+        try {
+          relativeProductsArray = JSON.parse(relativeProducts);
+        } catch (e) {
+          relativeProductsArray = [];
+        }
+      } else if (Array.isArray(relativeProducts)) {
+        relativeProductsArray = relativeProducts;
+      }
+      findProduct.relativeProducts = relativeProductsArray;
+    }
 
     await findProduct.save();
     res.status(200).json({
@@ -174,10 +215,35 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: product,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error occurred while fetching product",
+    });
+  }
+};
+
 module.exports = {
   handleImageUpload,
   addProduct,
   fetchAllProducts,
   editProduct,
   deleteProduct,
+  getProductById,
 };

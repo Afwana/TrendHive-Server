@@ -1,5 +1,20 @@
 const mongoose = require("mongoose");
 
+const RelativeProductSchema = new mongoose.Schema(
+  {
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+    },
+    productName: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false }
+);
+
 const ProductSchema = new mongoose.Schema(
   {
     images: [String],
@@ -7,7 +22,7 @@ const ProductSchema = new mongoose.Schema(
     title: String,
     description: String,
     category: String,
-    subCategory: [String],
+    subCategories: [String],
     size: String,
     colours: String,
     quality: String,
@@ -16,7 +31,7 @@ const ProductSchema = new mongoose.Schema(
     salePrice: Number,
     totalStock: Number,
     averageReview: Number,
-    relativeProducts: [String],
+    relativeProducts: [RelativeProductSchema],
   },
   { timestamps: true }
 );
