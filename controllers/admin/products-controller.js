@@ -1,5 +1,6 @@
 const { imageUploadUtil } = require("../../helpers/cloudinary");
 const Product = require("../../models/Product");
+const mongoose = require("mongoose");
 
 const handleImageUpload = async (req, res) => {
   try {
@@ -65,7 +66,7 @@ const addProduct = async (req, res) => {
       title,
       description,
       category,
-      sucCategories: subCategoriesArray,
+      subCategories: subCategoriesArray,
       brand,
       size,
       quality,
@@ -74,7 +75,7 @@ const addProduct = async (req, res) => {
       salePrice: salePrice || price,
       totalStock: totalStock || 0,
       averageReview: averageReview || 0,
-      relativeProducts: relativeProducts,
+      relativeProducts: relativeProductsArray,
     });
 
     await newlyCreatedProduct.save();
@@ -93,8 +94,15 @@ const addProduct = async (req, res) => {
 
 //fetch all products
 const fetchAllProducts = async (req, res) => {
+  console.log(req);
+
   try {
+    if (mongoose.connection.readyState !== 1) {
+      throw new Error("Database not connected");
+    }
+
     const listOfProducts = await Product.find({});
+    console.log(`Fetched ${listOfProducts.length} products`);
     res.status(200).json({
       success: true,
       data: listOfProducts,
@@ -103,7 +111,8 @@ const fetchAllProducts = async (req, res) => {
     console.log(e);
     res.status(500).json({
       success: false,
-      message: "Error occured",
+      message: "Error occurred while fetching products",
+      error: e.message,
     });
   }
 };
