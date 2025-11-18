@@ -15,10 +15,11 @@ const {
 const router = express.Router();
 
 router.post("/add", addCategory);
+router.get("/get", fetchAllCategories);
+
 router.get("/:id", getCategoryById);
 router.put("/edit/:id", editCategory);
 router.delete("/delete/:id", deleteCategory);
-router.get("/get", fetchAllCategories);
 
 // Subcategory routes
 router.get("/:id/subCategories", getSubCategoriesByCategoryId);
