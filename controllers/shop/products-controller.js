@@ -57,12 +57,10 @@ const getFilteredProducts = async (req, res) => {
         break;
       case "title-atoz":
         sort.title = 1;
-
         break;
 
       case "title-ztoa":
         sort.title = -1;
-
         break;
 
       default:
