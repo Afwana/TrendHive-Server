@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
 
@@ -29,7 +30,7 @@ const addToCart = async (req, res) => {
     }
 
     const findCurrentProductIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
+      (item) => item.productId.toString() === productId,
     );
 
     if (findCurrentProductIndex === -1) {
@@ -58,10 +59,14 @@ const fetchCartItems = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    if (!userId) {
+    if (
+      !userId ||
+      userId === "undefined" ||
+      !mongoose.Types.ObjectId.isValid(userId)
+    ) {
       return res.status(400).json({
         success: false,
-        message: "User id is manadatory!",
+        message: "Valid user id is mandatory!",
       });
     }
 
@@ -78,7 +83,7 @@ const fetchCartItems = async (req, res) => {
     }
 
     const validItems = cart.items.filter(
-      (productItem) => productItem.productId
+      (productItem) => productItem.productId,
     );
 
     if (validItems.length < cart.items.length) {
@@ -132,7 +137,7 @@ const updateCartItemQty = async (req, res) => {
     }
 
     const findCurrentProductIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
+      (item) => item.productId.toString() === productId,
     );
 
     if (findCurrentProductIndex === -1) {
@@ -198,7 +203,7 @@ const deleteCartItem = async (req, res) => {
     }
 
     cart.items = cart.items.filter(
-      (item) => item.productId._id.toString() !== productId
+      (item) => item.productId._id.toString() !== productId,
     );
 
     await cart.save();

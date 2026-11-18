@@ -12,6 +12,7 @@ const adminBrandRouter = require("./routes/admin/brand-routes");
 const adminFooterRouter = require("./routes/admin/footer-routes");
 const adminReviewRouter = require("./routes/admin/reviews-routes");
 const adminReturnRouter = require("./routes/admin/return-routes");
+const adminStatsRouter = require("./routes/admin/stats-routes");
 const shopProfileRouter = require("./routes/shop/user-routes");
 const shopProductsRouter = require("./routes/shop/products-routes");
 const shopCartRouter = require("./routes/shop/cart-routes");
@@ -28,10 +29,14 @@ const commonFeatureRouter = require("./routes/common/feature-routes");
 // create a database connection -> u can also
 // create a separate file for this and then import that file here
 
+if (!process.env.MONGO_URI) {
+  console.error("MONGO_URI is not set! Add it in Render > Environment.");
+}
+
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 10000 })
   .then(() => console.log("MongoDB Connected"))
-  .catch((error) => console.log(error));
+  .catch((error) => console.log("MongoDB Connection Failed:", error));
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -43,8 +48,9 @@ app.use(
       "http://localhost:5173",
       "https://trendhive-resell.vercel.app",
       "https://trendhive-resell-admin.vercel.app",
+      ...(process.env.CLIENT_URLS ? process.env.CLIENT_URLS.split(",") : []),
     ],
-    methods: ["GET", "POST", "DELETE", "PUT"],
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",
@@ -53,7 +59,16 @@ app.use(
       "Pragma",
     ],
     credentials: true,
-  })
+  }),
+);
+
+app.set("trust proxy", 1); // needed behind Render's proxy for secure cookies
+
+app.get("/", (req, res) =>
+  res.json({
+    ok: true,
+    db: mongoose.connection.readyState === 1 ? "connected" : "not connected",
+  }),
 );
 
 app.use(cookieParser());
@@ -68,6 +83,7 @@ app.use("/api/admin/brand", adminBrandRouter);
 app.use("/api/admin/footer", adminFooterRouter);
 app.use("/api/admin/review", adminReviewRouter);
 app.use("/api/admin/return", adminReturnRouter);
+app.use("/api/admin/stats", adminStatsRouter);
 
 app.use("/api/shop", shopProfileRouter);
 app.use("/api/shop/products", shopProductsRouter);
